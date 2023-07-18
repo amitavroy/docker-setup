@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - php
+      - db
+      - adminer
+    networks:
+      - laravel
+
+  php:
+    container_name: php
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - laravel
+
+  db:
+    container_name: db
+    image: mysql:5.7.42-debian
+    restart: always
+    platform: linux/x86_64
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=forge
+      - MYSQL_PASSWORD=secret
+    networks:
+      - laravel
+
+  adminer:
+    container_name: admin
+    image: adminer:4.8.0
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    networks:
+      - laravel
+
+  composer:
+    container_name: composer
+    image: composer:latest
+    depends_on:
+      - php
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - laravel
+
+  artisan:
+    container_name: artisan
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ["php", "artisan"]
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    name: laravel
