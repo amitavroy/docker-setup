@@ -11,4 +11,12 @@ mkdir src data
 docker-composer up -d
 ```
 
-We will need the ```src``` folder to host the code. By default, ```nginx``` is configured to point to ```src/public``` folder because Laravel's index.php file is present in that folder.
+Because `nginx` depends on other serivces like `php` and `database`, you can also run the following to spin up the entire docker containers:
+
+```
+docker-compose up nginx
+```
+
+The setup assumes that the entire project codebase is inside folders. For example, the Laravel codebase will be inside the `src` folder. All Docker files will be one level above the Laravel codebase.
+
+We will need the `src` folder to host the code. By default, `nginx` is configured to point to `src/public` folder because Laravel's index.php file is present in that folder.
