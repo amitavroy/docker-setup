@@ -20,3 +20,13 @@ docker-compose up nginx
 The setup assumes that the entire project codebase is inside folders. For example, the Laravel codebase will be inside the `src` folder. All Docker files will be one level above the Laravel codebase.
 
 We will need the `src` folder to host the code. By default, `nginx` is configured to point to `src/public` folder because Laravel's index.php file is present in that folder.
+
+## What does this project give out of the box
+
+This project right now gives the following pre-configured containers to work with:
+
+1. nginx - the web server
+2. php 8.2
+3. mysql - database
+4. adminer - standalone app to view database
+5. composer - yes, you get composer as a container rather than inside php container
