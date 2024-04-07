@@ -1,0 +1,18 @@
+#! /bin/bash
+
+if [[ "$1" == "test" ]]; then
+    shift
+    docker compose run --rm php vendor/bin/pest "$@"
+elif [[ "$1" == "migrate" ]]; then
+    shift
+    docker compose run --rm artisan migrate "$@"
+elif [[ "$1" == "ps" ]]; then
+    docker ps --format 'table {{.ID}}\t{{.Status}}\t{{.Names}}'
+# Add more elif blocks for other shortcuts
+else
+    echo "Usage: $0 <command>"
+    echo "Available commands:"
+    echo "
+    test       run application tests and reach out to PEST binary
+    "
+fi
