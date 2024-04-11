@@ -8,6 +8,17 @@ The docker folder has configurations and data folder for all the services that I
 
 The docker-compose.yml file as all the service definitions.
 
+## Environment file requirement
+
+This Docker setup allows you to configure ports used by different servers. I have kept most of them to some defaults.
+However, you can add these to your .env file and customise.
+
+```
+APP_PORT=9001
+DB_PORT=3306
+NODE_PORT=5173
+```
+
 ## How to install composer dependencies
 
 The composer container is in stopped state by default. To run any composer command including composer install we can do the following:
