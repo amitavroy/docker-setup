@@ -17,6 +17,9 @@ However, you can add these to your .env file and customise.
 APP_PORT=9001
 DB_PORT=3306
 NODE_PORT=5173
+MAILPIT_WEBUI=8025
+MAILPIT_SMTP=1025
+MAILPIT_MESSAGES=100
 ```
 
 ## How to install composer dependencies

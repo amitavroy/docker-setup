@@ -62,7 +62,6 @@ services:
         working_dir: "/usr/app"
         volumes:
             - .:/usr/app
-        command: "npm run dev"
         ports:
             - "${NODE_PORT:-5173}:5173"
         networks:
@@ -103,3 +102,19 @@ services:
             - 9379:6379
         networks:
             - appnet
+
+    mailpit:
+        container_name: "mailpit"
+        image: axllent/mailpit:v1.16
+        restart: unless-stopped
+        ports:
+            - ${MAILPIT_WEBUI:-8025}:8025
+            - ${MAILPIT_SMTP:-1025}:1025
+        volumes:
+            - ./docker/data/mailpit:/data
+        networks:
+            - appnet
+        environment:
+            MP_DATABASE: /data/mailpit.db
+            MP_SMTP_AUTH_ALLOW_INSECURE: true
+            MP_MAX_MESSAGES: ${MAILPIT_MESSAGES:-100}
