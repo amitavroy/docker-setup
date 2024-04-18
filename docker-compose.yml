@@ -55,9 +55,6 @@ services:
 
     node:
         image: node:alpine3.19
-        depends_on:
-            - nginx
-            - php
         container_name: "node"
         working_dir: "/usr/app"
         volumes:
