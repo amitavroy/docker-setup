@@ -29,3 +29,19 @@ The composer container is in stopped state by default. To run any composer comma
 ```
 docker-compose run composer install
 ```
+
+## How to install node depedencies
+
+The node container can be used to install npm packages.
+
+```
+docker-compose run node npm i
+```
+
+## Running artisan commands
+
+We also have an artisan service which can be used specifically to run artisan commands and then they can die.
+
+```
+docker-compose run artisan key:generate
+```
