@@ -1,3 +1,5 @@
 .DS_Store
 *.pem
 .env
+src/*
+!src/README.md

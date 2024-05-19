@@ -1,35 +1,38 @@
-FROM php:8.2-fpm-alpine3.19
+############################################
+# Base Image
+############################################
+FROM serversideup/php:8.3-fpm-nginx-bookworm as base
 
-ARG UID
-ARG GID
+############################################
+# Development Image
+############################################
+FROM base as development
 
-ENV UID=${UID}
-ENV GID=${GID}
+# Switch to root so we can do root things
+USER root
 
-RUN mkdir -p /var/www/html
+# Save the build arguments as a variable
+ARG USER_ID
+ARG GROUP_ID
 
-WORKDIR /var/www/html
+# Use the build arguments to change the UID
+# and GID of www-data while also changing
+# the file permissions for NGINX
+RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
+    \
+    # Update the file permissions for our NGINX service to match the new UID/GID
+    docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
 
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+# Drop back to our unprivileged user
+USER www-data
 
-# MacOS staff group's gid is 20, so is the dialout group in alpine linux. We're not using it, let's just remove it.
-RUN delgroup dialout
+############################################
+# Production Image
+############################################
 
-RUN addgroup -g ${GID} --system laravel
-RUN adduser -G laravel --system -D -s /bin/sh -u ${UID} laravel
+# Since we're calling "base", production isn't
+# calling any of that permission stuff
+FROM base as production
 
-RUN sed -i "s/user = www-data/user = laravel/g" /usr/local/etc/php-fpm.d/www.conf
-RUN sed -i "s/group = www-data/group = laravel/g" /usr/local/etc/php-fpm.d/www.conf
-RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
-
-RUN docker-php-ext-install pdo pdo_mysql
-
-RUN mkdir -p /usr/src/php/ext/redis \
-    && curl -L https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
-    && echo 'redis' >> /usr/src/php-available-exts \
-    && docker-php-ext-install redis
-
-USER laravel
-
-CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
-
+# Copy our app files as www-data (33:33)
+COPY --chown=www-data:www-data . /var/www/html
