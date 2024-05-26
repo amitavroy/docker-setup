@@ -41,37 +41,6 @@ services:
         networks:
             - appnet
 
-    composer:
-        depends_on:
-            - php
-        build:
-            context: ./docker/php
-            dockerfile: php.dockerfile
-            target: development
-            args:
-                USER_ID: ${UID:-1000}
-                GROUP_ID: ${GID:-1000}
-        entrypoint: ["composer", "--ignore-platform-reqs"]
-        volumes:
-            - ./src:/var/www/html
-        networks:
-            - appnet
-
-    artisan:
-        depends_on:
-            - mysql
-        build:
-            context: ./docker/php
-            dockerfile: php.dockerfile
-            args:
-                - UID=${UID:-1000}
-                - GID=${GID:-1000}
-        entrypoint: ["php", "/var/www/html/artisan"]
-        volumes:
-            - ./src:/var/www/html:delegated
-        networks:
-            - appnet
-
     phpmyadmin:
         depends_on:
             - mysql
