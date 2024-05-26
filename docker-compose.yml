@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
     appnet:
 
@@ -31,7 +29,7 @@ services:
             - appnet
         environment:
             MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
-            MARIADB_DATABASE: ${DB_DATABASE}
+            MARIADB_DATABASE: ${DB_DATABASE:-laravel}
 
     redis:
         image: redis:alpine
@@ -51,9 +49,9 @@ services:
         networks:
             - appnet
         environment:
-            MYSQL_ROOT_PASSWORD: ${DB_USERNAME}
-            MYSQL_USER: ${DB_USERNAME}
-            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_USERNAME:-root}
+            MYSQL_USER: ${DB_USERNAME:-root}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-}
             PMA_HOST: mysql
 
     node:
