@@ -11,7 +11,7 @@ elif [[ "$1" == "composer" ]]; then
     docker compose run --rm php composer "$@"
 elif [[ "$1" == "php" ]]; then
     shift
-    docker compose run --rm php "$@"
+    docker compose run --rm php php "$@"
 elif [[ "$1" == "artisan" ]]; then
     shift
     docker compose run --rm php php artisan "$@"
