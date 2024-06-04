@@ -4,8 +4,8 @@ networks:
 services:
     php:
         build:
-            context: ./docker/php
-            dockerfile: php.dockerfile
+            context: .
+            dockerfile: ./docker/php/php.dockerfile
             target: development
             args:
                 USER_ID: ${UID:-1000}
@@ -45,7 +45,7 @@ services:
         image: phpmyadmin
         restart: always
         ports:
-            - 8080:80
+            - ${DB_ADMIN_UI:-8080}:80
         networks:
             - appnet
         environment:
