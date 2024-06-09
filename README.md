@@ -2,46 +2,25 @@
 
 This project is my Docker setup for a typical Laravel project.
 
-We can copy all the files directly inside the root of the Laravel codebase.
+The approach for this setup is to have the Docker setup-related files outside the main codebase. This allows me to have a unified Docker setup for all my projects using this main repository. I consider this as my Docker-based development environment. And, this also allows me to have Docker files inside the main source folder which is project-specific and might also go to production.
 
-The docker folder has configurations and data folder for all the services that I am using.
+# The q file
 
-The docker-compose.yml file as all the service definitions.
+I have a `q` sh file which has some shortcuts for easy use of the docker commands. I used q because this is the most easy to reach character for me and with just that one alphabet, I would be able to get into the commands that the file exposes.
 
-## Environment file requirement
+# How to setup a project
 
-This Docker setup allows you to configure ports used by different servers. I have kept most of them to some defaults.
-However, you can add these to your .env file and customise.
+## Start with a clean setup - Clone and create new Laravel project
 
-```
-APP_PORT=9001
-DB_PORT=3306
-NODE_PORT=5173
-MAILPIT_WEBUI=8025
-MAILPIT_SMTP=1025
-MAILPIT_MESSAGES=100
-```
-
-## How to install composer dependencies
-
-The composer container is in stopped state by default. To run any composer command including composer install we can do the following:
+Clone the repository with your project name using the following command
 
 ```
-docker-compose run composer install
+git clone https://github.com/amitavroy/docker-setup.git my-blog
 ```
 
-## How to install node depedencies
-
-The node container can be used to install npm packages.
+Once this is done, we will delete the README.md file from inside the `src` directory and using the composer service to create a new Laravel project.
 
 ```
-docker-compose run node npm i
-```
-
-## Running artisan commands
-
-We also have an artisan service which can be used specifically to run artisan commands and then they can die.
-
-```
-docker-compose run artisan key:generate
+rm src/README.md
+./q composer create-project laravel/laravel .
 ```
