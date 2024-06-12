@@ -17,6 +17,19 @@ services:
         networks:
             - appnet
 
+    phpcli:
+        build:
+            context: .
+            dockerfile: ./docker/phpcli/phpcli.dockerfile
+            target: development
+            args:
+                USER_ID: ${UID:-1000}
+                GROUP_ID: ${GID:-1000}
+        volumes:
+            - ./src:/var/www/html
+        networks:
+            - appnet
+
     mysql:
         image: mariadb:lts
         restart: unless-stopped

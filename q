@@ -2,22 +2,22 @@
 
 if [[ "$1" == "test" ]]; then
     shift
-    docker compose run --rm php vendor/bin/pest "$@"
+    docker compose run --rm phpcli php artisan test "$@"
 elif [[ "$1" == "migrate" ]]; then
     shift
-    docker compose run --rm php php artisan migrate "$@"
+    docker compose run --rm phpcli php artisan migrate "$@"
 elif [[ "$1" == "composer" ]]; then
     shift
-    docker compose run --rm php composer "$@"
+    docker compose run --rm phpcli composer "$@"
 elif [[ "$1" == "php" ]]; then
     shift
-    docker compose run --rm php php "$@"
+    docker compose run --rm phpcli php "$@"
 elif [[ "$1" == "artisan" ]]; then
     shift
-    docker compose run --rm php php artisan "$@"
+    docker compose run --rm phpcli php artisan "$@"
 elif [[ "$1" == "db:reset" ]]; then
     shift
-    docker compose run --rm php php artisan migrate:fresh --seed "$@"
+    docker compose run --rm phpcli php artisan migrate:fresh --seed "$@"
 elif [[ "$1" == "vite" ]]; then
     shift
     docker compose run --rm vite npm run dev
