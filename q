@@ -31,6 +31,8 @@ elif [[ "$1" == "up" ]]; then
     docker compose --env-file ./src/.env up "$@"
 elif [[ "$1" == "down" ]]; then
     docker compose --env-file ./src/.env down --remove-orphans
+elif [[ "$1" == "clear" ]]; then
+    docker container stop $(docker container ps -aq) && docker container rm $(docker container ps -aq)
 
 # Add more elif blocks for other shortcuts
 else
@@ -39,7 +41,8 @@ else
     echo "
     ps         show the docker processes
     up         start the compose services
-    down         stop the composer services
+    down       stop the composer services
+    clear      clear all containers
     composer   run composer commands
     php        run commands inside php container
     artisan    run artisan commands
