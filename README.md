@@ -24,3 +24,20 @@ Once this is done, we will delete the README.md file from inside the `src` direc
 rm src/README.md
 ./q composer create-project laravel/laravel .
 ```
+
+## The vite configuration
+
+This project keeps a node container up with `npm run dev` command. This means any changes that you do to the CSS or JS file would automatically reflect through vite.
+However, for this to happen, you have to make a small change to your `vite` config.
+
+Add this after the `plugins` array.
+
+```
+server: {
+    hmr: {
+        host: 'localhost', port: 5173
+    },
+    host: '0.0.0.0',
+    port: 5173,
+}
+```
