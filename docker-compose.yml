@@ -30,32 +30,74 @@ services:
         networks:
             - appnet
 
-    postgres:
-        build:
-            context: .
-            dockerfile: ./docker/pg/pg.dockerfile
-        container_name: postgres
-        environment:
-            POSTGRES_USER: admin
-            POSTGRES_PASSWORD: password
-            POSTGRES_DB: mydb
-        volumes:
-            - ./docker/data/postgres:/var/lib/postgresql/data
-            - ./docker/pg/init.sql:/docker-entrypoint-initdb.d/init.sql
+    mysql:
+        image: mariadb:lts
+        restart: unless-stopped
+        tty: true
         ports:
-            - "5432:5432"
+            - ${DB_PORT:-3306}:3306
+        volumes:
+            - ./docker/data/mysql:/var/lib/mysql
+        networks:
+            - appnet
+        environment:
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+            MARIADB_DATABASE: ${DB_DATABASE:-laravel}
+
+    redis:
+        image: redis:alpine
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
         networks:
             - appnet
 
-    pgadmin:
-        image: dpage/pgadmin4
-        container_name: pgadmin
-        environment:
-            PGADMIN_DEFAULT_EMAIL: admin@admin.com
-            PGADMIN_DEFAULT_PASSWORD: admin
-        ports:
-            - "5050:80"
+    phpmyadmin:
         depends_on:
-            - postgres
+            - mysql
+        image: phpmyadmin
+        restart: always
+        ports:
+            - ${DB_ADMIN_UI:-8080}:80
         networks:
             - appnet
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_USERNAME:-root}
+            MYSQL_USER: ${DB_USERNAME:-root}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-}
+            PMA_HOST: mysql
+
+    node:
+        image: node:alpine3.19
+        working_dir: "/usr/app"
+        volumes:
+            - ./src:/usr/app
+        networks:
+            - appnet
+
+    vite:
+        image: node:alpine3.19
+        working_dir: "/usr/app"
+        entrypoint: ["npm", "run", "dev"]
+        volumes:
+            - ./src:/usr/app
+        ports:
+            - "${NODE_PORT:-5173}:5173"
+        networks:
+            - appnet
+
+    mailpit:
+        container_name: "mailpit"
+        image: axllent/mailpit:v1.16
+        restart: unless-stopped
+        ports:
+            - ${MAILPIT_WEBUI:-8025}:8025
+            - ${MAILPIT_SMTP:-1025}:1025
+        volumes:
+            - ./docker/data/mailpit:/data
+        networks:
+            - appnet
+        environment:
+            MP_DATABASE: /data/mailpit.db
+            MP_SMTP_AUTH_ALLOW_INSECURE: true
+            MP_MAX_MESSAGES: ${MAILPIT_MESSAGES:-100}
