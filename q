@@ -35,6 +35,12 @@ elif [[ "$1" == "restart" ]]; then
     docker compose restart
 elif [[ "$1" == "clear" ]]; then
     docker container stop $(docker container ps -aq) && docker container rm $(docker container ps -aq)
+elif [[ "$1" == "crp" ]]; then
+    rm -rf ./src/README.md && \
+    docker compose run --rm phpcli composer create-project laravel/laravel . && \
+    cd ./src && \
+    git init --initial-branch=main && \
+    git add . && git commit -m "Initial code commit"
 
 # Add more elif blocks for other shortcuts
 else
@@ -54,5 +60,6 @@ else
     test       run application tests and reach out to PEST binary
     node       run node container and any command on it
     migrate    run the migrations for the application
+    crp        create-project
     "
 fi

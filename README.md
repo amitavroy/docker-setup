@@ -18,11 +18,16 @@ Clone the repository with your project name using the following command
 git clone https://github.com/amitavroy/docker-setup.git my-blog
 ```
 
-Once this is done, we will delete the README.md file from inside the `src` directory and using the composer service to create a new Laravel project.
+Once this is done, we need to delete the README.md file from inside the `src` directory and using the composer service to create a new Laravel project. We have a script which will do this for you.
+
+Here is what the script will do:
+1. remove the README file
+1. create a new laravel project
+1. initialise git on that project
+1. make your first commit as well
 
 ```
-rm src/README.md
-./q composer create-project laravel/laravel .
+./q crp # This will create the project
 ```
 
 ## The vite configuration
